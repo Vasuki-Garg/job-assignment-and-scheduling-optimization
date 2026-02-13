@@ -30,7 +30,7 @@ Minimize **Tmax** (the makespan).
 ## Repository contents
 - `src/job_assignment_with_learning.py`: main solver script
 - `data/Process_Dataset.xlsx`: input dataset (sheet: `Part 1`)
-- `colab/run_colab.py`: Google Colab runner
+- `colab/run_colab.py`: google colab runner
 
 ## Run locally
 ```bash
