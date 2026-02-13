@@ -1,4 +1,4 @@
-# Garment Factory Job Assignment & Scheduling (Gurobi MILP)
+# Job Assignment & Scheduling (Gurobi MILP)
 
 This repository contains a Python + Gurobi implementation of a **job assignment and scheduling** mixed-integer linear program (MILP) for a garment factory setting. The model assigns jobs to workers across discrete time periods while capturing a **learning effect** (worker productivity improves with experience), enforcing **precedence constraints**, and limiting **worker energy consumption**.
 
