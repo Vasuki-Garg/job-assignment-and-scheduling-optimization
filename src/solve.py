@@ -1,17 +1,16 @@
+# src/job_assignment_with_learning.py
 from gurobipy import Model, GRB, quicksum
 import gurobipy as gp
 import math
 import pandas as pd
-import os
 import argparse
 
 
-def solve(excel_path: str, sheet_name: str = "Part 1"):
+def main(excel_path: str, sheet_name: str = "Part 1"):
     # read information of the process
     Process_Dataset_df = pd.read_excel(excel_path, sheet_name=sheet_name)
-
-    Volume_Job = Process_Dataset_df["Processing Time (1 min)"].tolist()
-    Skill_Level = Process_Dataset_df["Required Skill Level"].tolist()
+    Volume_Job = Process_Dataset_df["Processing Time (1 min)"].tolist()  # <- fixed
+    Skill_Level = Process_Dataset_df["Required Skill Level"].tolist()     # <- fixed
 
     # convert the skill level to the required energy consumption per 10 seconds (length of period)
     EnergyConsm = []
@@ -41,7 +40,6 @@ def solve(excel_path: str, sheet_name: str = "Part 1"):
     Kij = 2  # Learning Asymptote
     pij = 1  # Initial Experience
     rij = 3  # Learning rate
-
     v = Volume_Job  # Processing time for the each job
     ME = 18.6  # Max work in the time horizon
     E = EnergyConsm
@@ -256,36 +254,21 @@ def solve(excel_path: str, sheet_name: str = "Part 1"):
     # Solving model
     model.optimize()
 
-    # Print the values of decision variable x
+    # Print solution
     if model.status == GRB.OPTIMAL:
         print("Objective value with Chvátal-Gomory cuts:", model.objVal)
         print("Solution with Chvátal-Gomory cuts:")
         for var in model.getVars():
-            if var.varName.startswith("x") and var.x == 1:
-                print(
-                    f"Worker {var.varName.split('_')[1]} performs job {var.varName.split('_')[2]} "
-                    f"at period {var.varName.split('_')[3]}: {var.x}"
-                )
+            if var.varName.startswith("x") and var.x > 0.5:
+                _, worker, job, period = var.varName.split("_")
+                print(f"Worker {worker} performs job {job} at period {period}: {var.x}")
     else:
         print("Optimization ended with status:", model.status)
 
 
-def main():
-    parser = argparse.ArgumentParser(description="Job assignment with learning (Gurobi).")
-    parser.add_argument("--data", type=str, default="data/Process_Dataset.xlsx",
-                        help="Path to Process_Dataset.xlsx")
-    parser.add_argument("--sheet", type=str, default="Part 1",
-                        help="Excel sheet name (default: 'Part 1')")
-    args = parser.parse_args()
-
-    if not os.path.exists(args.data):
-        raise FileNotFoundError(
-            f"Excel file not found: {args.data}\n"
-            "Put Process_Dataset.xlsx at that path or pass --data <path>."
-        )
-
-    solve(args.data, args.sheet)
-
-
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--data", type=str, default="data/Process_Dataset.xlsx")
+    parser.add_argument("--sheet", type=str, default="Part 1")
+    args = parser.parse_args()
+    main(args.data, args.sheet)
