@@ -3,9 +3,5 @@ __pycache__/
 .ipynb_checkpoints/
 .DS_Store
 
-# data files (recommended if sensitive / large)
-data/
-*.xlsx
-
 # gurobi logs
 *.log
