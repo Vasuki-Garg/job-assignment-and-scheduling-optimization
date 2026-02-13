@@ -27,3 +27,7 @@ This repository contains a Python + Gurobi implementation of a **job assignment 
 ### Objective
 Minimize **Tmax** (the makespan).
 
+## Setup (local)
+```bash
+pip install -r requirements.txt
+python src/job_assignment_with_learning.py --data data/Process_Dataset.xlsx --sheet "Part 1"
